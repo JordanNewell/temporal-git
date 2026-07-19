@@ -1,0 +1,30 @@
+{
+  "name": "temporal-git",
+  "version": "2.0.0",
+  "description": "Automated git bisect. Find which commit introduced a bug with one command.",
+  "author": "Jordan Newell",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JordanNewell/temporal-git",
+    "directory": "packages/cli"
+  },
+  "bin": {
+    "temporal-git": "./dist/index.js"
+  },
+  "main": "./dist/index.js",
+  "scripts": {
+    "build": "tsc -p .",
+    "dev": "tsc -p . --watch",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "commander": "^12.0.0",
+    "picocolors": "^1.0.0",
+    "simple-git": "^3.19.1"
+  },
+  "devDependencies": {
+    "@types/node": "18.x",
+    "typescript": "^5.1.6"
+  }
+}

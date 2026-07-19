@@ -1,0 +1,92 @@
+{
+  "name": "temporal-git-vscode",
+  "displayName": "Temporal Git - Automated Git Bisect",
+  "description": "Find which commit introduced a bug. Automated git bisect with one command.",
+  "version": "2.0.0",
+  "publisher": "jordannewell",
+  "author": "Jordan Newell",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JordanNewell/temporal-git",
+    "directory": "packages/vscode"
+  },
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": [
+    "SCM Providers",
+    "Debuggers"
+  ],
+  "keywords": [
+    "git",
+    "bisect",
+    "debugging",
+    "blame",
+    "regression",
+    "bug-finding"
+  ],
+  "activationEvents": [
+    "onCommand:temporal-git.bisectRun",
+    "onCommand:temporal-git.bisectStart",
+    "onCommand:temporal-git.bisectGood",
+    "onCommand:temporal-git.bisectBad",
+    "onCommand:temporal-git.bisectSkip",
+    "onCommand:temporal-git.bisectReset"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "temporal-git.bisectRun",
+        "title": "Temporal Git: Bisect This Bug (Automated)",
+        "icon": "$(debug-start)"
+      },
+      {
+        "command": "temporal-git.bisectStart",
+        "title": "Temporal Git: Start Interactive Bisect",
+        "icon": "$(debug-step-over)"
+      },
+      {
+        "command": "temporal-git.bisectGood",
+        "title": "Temporal Git: Mark Current Commit as Good",
+        "icon": "$(check)"
+      },
+      {
+        "command": "temporal-git.bisectBad",
+        "title": "Temporal Git: Mark Current Commit as Bad",
+        "icon": "$(error)"
+      },
+      {
+        "command": "temporal-git.bisectSkip",
+        "title": "Temporal Git: Skip Current Commit",
+        "icon": "$(skip)"
+      },
+      {
+        "command": "temporal-git.bisectReset",
+        "title": "Temporal Git: Reset Bisect Session",
+        "icon": "$(discard)"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "temporal-git.bisectRun",
+        "key": "ctrl+shift+b",
+        "mac": "cmd+shift+b"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p .",
+    "watch": "tsc -watch -p ."
+  },
+  "dependencies": {
+    "simple-git": "^3.19.1"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.80.0",
+    "@types/node": "18.x",
+    "typescript": "^5.1.6"
+  }
+}

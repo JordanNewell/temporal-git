@@ -1,0 +1,7 @@
+node_modules/
+out/
+dist/
+*.js.map
+.DS_Store
+.vscode-test/
+.zcode/
