@@ -13,8 +13,8 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "npm run build -w packages/cli && npm run build -w packages/vscode",
+    "build": "npm run build -w packages/cli && npm run compile -w packages/vscode",
     "build:cli": "npm run build -w packages/cli",
-    "build:vscode": "npm run build -w packages/vscode"
+    "build:vscode": "npm run compile -w packages/vscode"
   }
 }
