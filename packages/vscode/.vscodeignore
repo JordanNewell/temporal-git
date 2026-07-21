@@ -1,0 +1,35 @@
+# Exclude everything not needed in the VSIX. After esbuild bundling,
+# the entire extension ships as a single out/extension.js with all deps
+# (@temporal-git/core, simple-git) inlined.
+#
+# Result: out/extension.js + manifest + LICENSE + README + CHANGELOG.
+#
+# NOTE: vsce does not allow combining this file with package.json's
+# "files" field. This file is used instead because it can express
+# "../**" patterns needed to stop vsce from pulling in sibling
+# packages and the .git directory from a monorepo.
+
+# Source — only ship the bundle
+src/**
+tsconfig.json
+
+# Compiled TS output — we ship the esbuild bundle (out/extension.js),
+# not the tsc output. Keep the bundle, drop the rest.
+out/bisect.*
+out/views/**
+out/extension.d.ts
+out/extension.js.map
+
+# Build config
+.esbuildignore
+.esbuildrc*
+
+# Local-only docs (don't ship in the VSIX)
+SMOKE_TEST.md
+
+# Monorepo leakage — vsce walks up from the package dir.
+../**
+../../**
+
+# vsce's defaults that we explicitly keep (matched by basename):
+# out/extension.js, LICENSE, package.json, README.md, CHANGELOG.md

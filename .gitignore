@@ -2,6 +2,7 @@ node_modules/
 out/
 dist/
 *.js.map
+*.vsix
 .DS_Store
 .vscode-test/
 .zcode/
