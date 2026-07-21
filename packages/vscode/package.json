@@ -36,7 +36,8 @@
   ],
   "main": "./out/extension.js",
   "files": [
-    "out"
+    "out",
+    "LICENSE"
   ],
   "contributes": {
     "commands": [
