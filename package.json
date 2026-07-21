@@ -1,6 +1,6 @@
 {
   "name": "temporal-git",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "private": true,
   "description": "Automated git bisect for finding which commit introduced a bug",
   "author": "Jordan Newell",
@@ -13,8 +13,10 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "npm run build -w packages/cli && npm run compile -w packages/vscode",
+    "build": "npm run build -w @temporal-git/core && npm run build -w packages/cli && npm run compile -w packages/vscode",
+    "build:core": "npm run build -w @temporal-git/core",
     "build:cli": "npm run build -w packages/cli",
-    "build:vscode": "npm run compile -w packages/vscode"
+    "build:vscode": "npm run compile -w packages/vscode",
+    "test": "npm run test -w @temporal-git/core"
   }
 }

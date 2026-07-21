@@ -1,17 +1,35 @@
 import * as vscode from 'vscode';
-import { BisectEngine } from './bisect';
+import { BisectEngine } from '@temporal-git/core';
 import { showResultWebview } from './views/resultWebview';
 
-export function activate(context: vscode.ExtensionContext) {
-  function getEngine(): BisectEngine | undefined {
-    const cwd = vscode.workspace.rootPath;
-    if (!cwd) {
-      vscode.window.showErrorMessage('Temporal Git requires an open workspace folder.');
-      return undefined;
-    }
-    return new BisectEngine(cwd);
-  }
+function getWorkspaceCwd(): string | undefined {
+  // workspace.rootPath is deprecated; prefer workspaceFolders[0].
+  return vscode.workspace.workspaceFolders?.[0]?.uri.fsPath;
+}
 
+function getEngine(): BisectEngine | undefined {
+  const cwd = getWorkspaceCwd();
+  if (!cwd) {
+    vscode.window.showErrorMessage('Temporal Git requires an open workspace folder.');
+    return undefined;
+  }
+  return new BisectEngine(cwd);
+}
+
+function splitCommand(command: string): string[] {
+  // Minimal shell-like split: respects single and double quotes.
+  // Sufficient for 'npm test', 'make test "foo bar"', etc. We don't pull in a
+  // full parser dependency for one input box.
+  const result: string[] = [];
+  const re = /"([^"]*)"|'([^']*)'|(\S+)/g;
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(command)) !== null) {
+    result.push(m[1] ?? m[2] ?? m[3]);
+  }
+  return result;
+}
+
+export function activate(context: vscode.ExtensionContext) {
   // Bisect Run (automated)
   const bisectRun = vscode.commands.registerCommand('temporal-git.bisectRun', async () => {
     const engine = getEngine();
@@ -43,10 +61,18 @@ export function activate(context: vscode.ExtensionContext) {
     if (!bad) return;
 
     const command = await vscode.window.showInputBox({
-      prompt: 'Test command to run on each commit',
+      prompt: 'Test command to run on each commit (quote args containing spaces)',
       placeHolder: 'npm test',
     });
     if (!command) return;
+
+    const argv = splitCommand(command);
+    if (argv.length === 0) {
+      vscode.window.showErrorMessage('Test command is empty.');
+      return;
+    }
+
+    const cwd = getWorkspaceCwd()!;
 
     await vscode.window.withProgress(
       {
@@ -56,23 +82,28 @@ export function activate(context: vscode.ExtensionContext) {
       },
       async (progress) => {
         try {
-          await engine.start(bad, good);
+          progress.report({ message: 'Starting bisect...' });
+          await engine.start({ bad, good });
 
-          const result = await engine.run(
-            command,
-            (output) => {
+          const result = await engine.run({
+            command: argv,
+            cwd,
+            onOutput(output) {
               const testLine = output.match(/running (.+)/);
               if (testLine) {
                 progress.report({ message: `Running: ${testLine[1].trim().substring(0, 60)}` });
               }
             },
-            (step, total) => {
-              progress.report({ message: `Step ${step}/${total}`, increment: (100 / total) });
-            }
-          );
+            onStep(step, total) {
+              progress.report({
+                message: `Step ${step}/${total}`,
+                increment: 100 / total,
+              });
+            },
+          });
 
           progress.report({ message: 'Culprit found!' });
-          showResultWebview(result, vscode.workspace.rootPath!);
+          await showResultWebview(result, cwd, engine);
         } catch (err) {
           vscode.window.showErrorMessage(`Bisect failed: ${(err as Error).message}`);
         }
@@ -86,7 +117,9 @@ export function activate(context: vscode.ExtensionContext) {
     if (!engine) return;
 
     if (await engine.isActive()) {
-      vscode.window.showWarningMessage('A bisect session is already active. Reset it first with "Temporal Git: Reset Bisect Session".');
+      vscode.window.showWarningMessage(
+        'A bisect session is already active. Reset it first with "Temporal Git: Reset Bisect Session".'
+      );
       return;
     }
 
@@ -104,7 +137,7 @@ export function activate(context: vscode.ExtensionContext) {
     if (!bad) return;
 
     try {
-      await engine.start(bad, good);
+      await engine.start({ bad, good });
       const current = await engine.getCurrentCommit();
       vscode.window.showInformationMessage(
         `Bisect started. Now testing: ${current.shortHash} — ${current.message}`
@@ -126,17 +159,8 @@ export function activate(context: vscode.ExtensionContext) {
 
     try {
       const output = await engine.mark('good');
-      const firstBad = output.match(/^([0-9a-f]+) is the first bad commit$/m);
-      if (firstBad) {
-        const result = await engine.getCommitInfo(firstBad[1]);
-        await engine.reset();
-        showResultWebview(result as any, vscode.workspace.rootPath!);
-      } else {
-        const current = await engine.getCurrentCommit();
-        vscode.window.showInformationMessage(
-          `Marked good. Now testing: ${current.shortHash} — ${current.message}`
-        );
-      }
+      const cwd = getWorkspaceCwd()!;
+      await handleMarkResult(engine, output, cwd);
     } catch (err) {
       vscode.window.showErrorMessage(`Failed: ${(err as Error).message}`);
     }
@@ -154,17 +178,8 @@ export function activate(context: vscode.ExtensionContext) {
 
     try {
       const output = await engine.mark('bad');
-      const firstBad = output.match(/^([0-9a-f]+) is the first bad commit$/m);
-      if (firstBad) {
-        const result = await engine.getCommitInfo(firstBad[1]);
-        await engine.reset();
-        showResultWebview(result as any, vscode.workspace.rootPath!);
-      } else {
-        const current = await engine.getCurrentCommit();
-        vscode.window.showInformationMessage(
-          `Marked bad. Now testing: ${current.shortHash} — ${current.message}`
-        );
-      }
+      const cwd = getWorkspaceCwd()!;
+      await handleMarkResult(engine, output, cwd);
     } catch (err) {
       vscode.window.showErrorMessage(`Failed: ${(err as Error).message}`);
     }
@@ -178,7 +193,9 @@ export function activate(context: vscode.ExtensionContext) {
     try {
       await engine.mark('skip');
       const current = await engine.getCurrentCommit();
-      vscode.window.showInformationMessage(`Skipped. Now testing: ${current.shortHash} — ${current.message}`);
+      vscode.window.showInformationMessage(
+        `Skipped. Now testing: ${current.shortHash} — ${current.message}`
+      );
     } catch (err) {
       vscode.window.showErrorMessage(`Failed: ${(err as Error).message}`);
     }
@@ -205,6 +222,26 @@ export function activate(context: vscode.ExtensionContext) {
     bisectSkip,
     bisectReset
   );
+}
+
+const FIRST_BAD_COMMIT_REGEX = /^([0-9a-f]+) is the first bad commit$/m;
+
+async function handleMarkResult(
+  engine: BisectEngine,
+  output: string,
+  cwd: string
+): Promise<void> {
+  const firstBad = output.match(FIRST_BAD_COMMIT_REGEX);
+  if (firstBad) {
+    const result = await engine.getCommitInfo(firstBad[1]);
+    await engine.reset();
+    await showResultWebview(result, cwd, engine);
+  } else {
+    const current = await engine.getCurrentCommit();
+    vscode.window.showInformationMessage(
+      `Marked. Now testing: ${current.shortHash} — ${current.message}`
+    );
+  }
 }
 
 export function deactivate() {}

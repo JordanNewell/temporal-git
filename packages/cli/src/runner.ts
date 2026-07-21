@@ -1,15 +1,14 @@
-import { BisectEngine, BisectOptions, BisectResult } from './bisect';
+import { BisectEngine, BisectOptions, BisectResult } from '@temporal-git/core';
 import {
   clearLine,
-  reportError,
   reportProgress,
   reportResult,
   reportStart,
 } from './reporter';
 
 export interface AutomatedRunOptions extends BisectOptions {
-  command: string;
-  args?: string[];
+  /** Test command argv, e.g. ['npm', 'test']. */
+  command: string[];
   noReset?: boolean;
 }
 
@@ -31,15 +30,11 @@ export async function runAutomatedBisect(
 
   const result = await engine.run({
     command: options.command,
-    args: options.args,
     noReset: options.noReset,
-    onProgress(chunk) {
-      const commitMatch = chunk.match(/running (.+)/);
-      if (commitMatch) {
-        clearLine();
-      }
+    onOutput(_chunk) {
+      // Reserved for richer terminal rendering later.
     },
-    async onStep(_commit, step, total) {
+    onStep(step, total) {
       clearLine();
       reportProgress(step, total);
     },
@@ -47,8 +42,7 @@ export async function runAutomatedBisect(
 
   clearLine();
 
-  const shortHash = await engine.getShortCommit(result.commit);
-  reportResult(result, shortHash);
+  reportResult(result, result.shortCommit);
 
   return result;
 }

@@ -1,34 +1,24 @@
 {
-  "name": "temporal-git",
+  "name": "@temporal-git/core",
   "version": "2.1.0",
-  "description": "Automated git bisect. Find which commit introduced a bug with one command.",
+  "description": "Core git bisect engine for temporal-git (shared by CLI and VS Code extension).",
   "author": "Jordan Newell",
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/JordanNewell/temporal-git",
-    "directory": "packages/cli"
-  },
-  "engines": {
-    "node": ">=18"
-  },
-  "bin": {
-    "temporal-git": "./dist/bin/temporal-git.js"
+    "directory": "packages/core"
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "files": [
-    "dist"
-  ],
+  "files": ["dist"],
   "scripts": {
     "build": "tsc -p .",
     "dev": "tsc -p . --watch",
-    "prepublishOnly": "npm run build"
+    "pretest": "npm run build",
+    "test": "node --test \"dist/test/**/*.test.js\""
   },
   "dependencies": {
-    "@temporal-git/core": "^2.0.0",
-    "commander": "^12.0.0",
-    "picocolors": "^1.0.0",
     "simple-git": "^3.19.1"
   },
   "devDependencies": {

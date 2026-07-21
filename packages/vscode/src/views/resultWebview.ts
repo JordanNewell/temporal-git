@@ -1,7 +1,11 @@
 import * as vscode from 'vscode';
-import { BisectResult } from '../bisect';
+import { BisectEngine, BisectResult } from '@temporal-git/core';
 
-export function showResultWebview(result: BisectResult, cwd: string): void {
+export async function showResultWebview(
+  result: BisectResult,
+  cwd: string,
+  engine: BisectEngine
+): Promise<void> {
   const panel = vscode.window.createWebviewPanel(
     'temporalGitResult',
     'Culprit Commit Found',
@@ -9,15 +13,26 @@ export function showResultWebview(result: BisectResult, cwd: string): void {
     { enableScripts: true }
   );
 
-  panel.webview.html = getResultHtml(result);
+  // Determine GitHub remote up-front so the button renders only when it works.
+  const remote = await engine.getGitHubRemote();
+
+  panel.webview.html = getResultHtml(result, remote);
 
   panel.webview.onDidReceiveMessage(async (message) => {
     if (message.command === 'showDiff') {
-      const uri = vscode.Uri.file(cwd);
-      await vscode.commands.executeCommand('git.show', result.shortCommit, uri);
-    } else if (message.command === 'openInGitHub') {
+      // `git.showFile` isn't public; the supported way to open a commit's
+      // diff in VS Code is to open its file at that ref via the git: → diff.
+      // The cleanest stable surface is opening a quick compare: HEAD vs ref
+      // is not exposed, so fall back to the SCM panel by running `git show`
+      // in a terminal the user controls.
+      const terminal = vscode.window.createTerminal({ name: `git show ${result.shortCommit}`, cwd });
+      terminal.show();
+      terminal.sendText(`git show ${result.shortCommit}`);
+    } else if (message.command === 'openInGitHub' && remote) {
       vscode.env.openExternal(
-        vscode.Uri.parse(`https://github.com/${parseGitRemote(cwd)}/commit/${result.commit}`)
+        vscode.Uri.parse(
+          `https://github.com/${remote}/commit/${result.commit}`
+        )
       );
     } else if (message.command === 'copyHash') {
       await vscode.env.clipboard.writeText(result.shortCommit);
@@ -26,9 +41,28 @@ export function showResultWebview(result: BisectResult, cwd: string): void {
   });
 }
 
-function getResultHtml(result: BisectResult): string {
-  return /*html*/ `
-<!DOCTYPE html>
+function escapeHtml(s: string): string {
+  return s
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function getResultHtml(result: BisectResult, remote: string | null): string {
+  const subject = escapeHtml(result.message.split('\n')[0] || '');
+  const body = result.message.includes('\n')
+    ? result.message.split('\n').slice(1).join('\n')
+    : '';
+  const bodyHtml = body
+    ? `<div class="message-body">${escapeHtml(body)}</div>`
+    : '';
+  const githubButton = remote
+    ? `<button class="secondary" onclick="openInGitHub()">Open in GitHub</button>`
+    : '';
+
+  return /*html*/ `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -115,19 +149,20 @@ function getResultHtml(result: BisectResult): string {
   </div>
 
   <div class="commit-section">
-    <span class="commit-hash" onclick="copyHash()">${result.commit}</span>
-    <div class="commit-message">${result.message.split('\n')[0]}</div>
+    <span class="commit-hash" onclick="copyHash()">${escapeHtml(result.shortCommit)}</span>
+    <div class="commit-message">${subject}</div>
     <div class="metadata">
-      <span>${result.author}</span>
+      <span>${escapeHtml(result.author)}</span>
       <span>|</span>
-      <span>${new Date(result.date).toLocaleDateString()}</span>
+      <span>${escapeHtml(formatDate(result.date))}</span>
     </div>
-    ${result.message.includes('\n') ? `<div class="message-body">${result.message.split('\n').slice(1).join('\n')}</div>` : ''}
+    ${bodyHtml}
   </div>
 
   <div class="actions">
     <button onclick="showDiff()">View Diff</button>
     <button class="secondary" onclick="copyHash()">Copy Hash</button>
+    ${githubButton}
   </div>
 
   <script>
@@ -146,8 +181,8 @@ function getResultHtml(result: BisectResult): string {
 </html>`;
 }
 
-function parseGitRemote(_cwd: string): string {
-  // Placeholder — in a real implementation, parse .git/config for the remote URL
-  // and extract the owner/repo from it
-  return 'owner/repo';
+function formatDate(iso: string): string {
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return iso;
+  return d.toLocaleDateString();
 }

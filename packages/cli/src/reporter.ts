@@ -1,15 +1,15 @@
 import pc from 'picocolors';
-import { BisectResult } from './bisect';
+import { BisectResult } from '@temporal-git/core';
 
 export function reportResult(result: BisectResult, shortHash: string): void {
+  const body = result.message.split('\n').slice(1).join('\n  ');
   const lines = [
     '',
     `${pc.red('!')}  ${pc.bold('Found the culprit commit:')}`,
     '',
     `  ${pc.cyan(shortHash)}  ${pc.bold(result.message.split('\n')[0])}`,
     `  ${pc.dim('Author:')} ${result.author}  ${pc.dim('|')}  ${result.date}`,
-    '',
-    `  ${pc.dim(result.message.split('\n').slice(1).join('\n  '))}`,
+    ...(body ? ['', `  ${pc.dim(body)}`] : []),
     '',
     `  ${pc.dim('Run:')} ${pc.cyan(`git show ${shortHash}`)}     ${pc.dim('Run:')} ${pc.cyan('temporal-git reset')}`,
     '',
@@ -21,14 +21,10 @@ export function reportResult(result: BisectResult, shortHash: string): void {
 export function reportProgress(step: number, total: number): void {
   const bar = formatBar(step, total);
   const pct = Math.round((step / total) * 100);
-  process.stdout.write(`  ${pc.dim('Bisecting')} ${bar} ${pc.dim(`${pct}%`)}`);
-  process.stdout.write('\r');
-}
-
-export function reportStepCommit(commit: string, author: string, message: string): void {
-  process.stdout.write(
-    `  ${pc.dim('Testing')} ${pc.cyan(commit)} ${pc.dim(`${author} - ${message.split('\n')[0]}`)}   \n`
-  );
+  // Clear first, then draw — otherwise a shorter bar leaves the previous
+  // longer line's tail on screen.
+  process.stdout.write('\r\x1b[K');
+  process.stdout.write(`  ${pc.dim('Bisecting')} ${bar} ${pct}% (step ${step}/${total})`);
 }
 
 export function reportStart(good: string, bad: string): void {
@@ -49,6 +45,10 @@ export function reportError(message: string): void {
   console.error(`\n  ${pc.red('Error:')} ${message}\n`);
 }
 
+export function clearLine(): void {
+  process.stdout.write('\r\x1b[K');
+}
+
 function formatBar(current: number, total: number): string {
   const width = 20;
   const t = Math.max(total, 1);
@@ -56,8 +56,4 @@ function formatBar(current: number, total: number): string {
   const filled = Math.round((c / t) * width);
   const empty = width - filled;
   return `${pc.green('█'.repeat(filled))}${pc.dim('░'.repeat(empty))}`;
-}
-
-export function clearLine(): void {
-  process.stdout.write('\r\x1b[K');
 }

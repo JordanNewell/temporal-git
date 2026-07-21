@@ -1,6 +1,21 @@
 import * as readline from 'readline';
-import { BisectEngine, BisectOptions, BisectResult } from './bisect';
+import { BisectEngine, BisectOptions, BisectResult } from '@temporal-git/core';
 import { reportError, reportResult, reportStart, reportStatus } from './reporter';
+
+const FIRST_BAD_COMMIT_REGEX = /^([0-9a-f]+) is the first bad commit$/m;
+
+/**
+ * Maps a user's free-text answer to a bisect mark type, or returns null
+ * if the answer doesn't unambiguously map. (Previously any unknown input
+ * was silently coerced to 'skip', which corrupted the search.)
+ */
+function parseAnswer(input: string): 'good' | 'bad' | 'skip' | null {
+  const v = input.trim().toLowerCase();
+  if (v === 'g' || v === 'good') return 'good';
+  if (v === 'b' || v === 'bad') return 'bad';
+  if (v === 's' || v === 'skip') return 'skip';
+  return null;
+}
 
 export async function runInteractiveBisect(
   engine: BisectEngine,
@@ -24,47 +39,51 @@ export async function runInteractiveBisect(
   });
 
   return new Promise<BisectResult>((resolve, reject) => {
-    const prompt = () => {
-      askCurrent(engine, rl, resolve, reject);
+    const ask = () => {
+      void step(engine, rl, resolve, reject, ask);
     };
-    prompt();
+    ask();
   });
 }
 
-function askCurrent(
+function step(
   engine: BisectEngine,
   rl: readline.Interface,
   resolve: (result: BisectResult) => void,
-  reject: (err: Error) => void
+  reject: (err: Error) => void,
+  retry: () => void
 ): void {
   (async () => {
     try {
       const hash = await engine.getCurrentCommit();
-      const shortHash = await engine.getShortCommit(hash);
-      const info = await engine.getCommitInfo(hash);
+      const info = await engine.getCommitInfo(hash.hash);
 
-      reportStatus(shortHash, info.author, info.message);
+      reportStatus(hash.shortHash, info.author, info.message);
 
       rl.question(
         `  Is this commit (g)ood, (b)ad, or (s)kip? `,
         async (answer) => {
-          const response = answer.trim().toLowerCase();
-          try {
-            const output = await engine.mark(
-              response === 'g' ? 'good' : response === 'b' ? 'bad' : 'skip'
+          const parsed = parseAnswer(answer);
+          if (!parsed) {
+            reportError(
+              `Unknown answer "${answer.trim()}". Use g/good, b/bad, or s/skip.`
             );
+            retry();
+            return;
+          }
+          try {
+            const output = await engine.mark(parsed);
 
-            const firstBadMatch = output.match(/^([0-9a-f]+) is the first bad commit$/m);
+            const firstBadMatch = output.match(FIRST_BAD_COMMIT_REGEX);
             if (firstBadMatch) {
               const culpritHash = firstBadMatch[1];
               const result = await engine.getCommitInfo(culpritHash);
-              const shortResultHash = await engine.getShortCommit(culpritHash);
               await engine.reset();
               rl.close();
-              reportResult(result, shortResultHash);
+              reportResult(result, result.shortCommit);
               resolve(result);
             } else {
-              askCurrent(engine, rl, resolve, reject);
+              step(engine, rl, resolve, reject, retry);
             }
           } catch (err) {
             reportError(`Failed to mark commit: ${err}`);
