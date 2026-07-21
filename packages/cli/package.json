@@ -1,6 +1,6 @@
 {
   "name": "temporal-git",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "Automated git bisect. Find which commit introduced a bug with one command.",
   "author": "Jordan Newell",
   "license": "MIT",
@@ -13,7 +13,7 @@
     "node": ">=18"
   },
   "bin": {
-    "temporal-git": "./dist/bin/temporal-git.js"
+    "temporal-git": "dist/bin/temporal-git.js"
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
