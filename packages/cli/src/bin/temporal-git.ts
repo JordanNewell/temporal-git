@@ -8,12 +8,18 @@ import { runAutomatedBisect } from '../runner';
 import { runInteractiveBisect } from '../interactive';
 import { reportError, reportReset } from '../reporter';
 
+// Read from package.json so --version can never drift from the published
+// version again. Compiled bin lives at dist/bin/, package.json at the
+// package root: ../../package.json.
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const pkg = require('../../package.json');
+
 const program = new Command();
 
 program
   .name('temporal-git')
   .description('Automated git bisect. Find which commit introduced a bug.')
-  .version('2.0.0');
+  .version(pkg.version);
 
 program
   .command('run')
