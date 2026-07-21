@@ -29,6 +29,16 @@ The extension imports [`@temporal-git/core`](https://www.npmjs.com/package/@temp
 - A workspace folder open inside a git repository
 - Node ≥ 18
 
+## Install
+
+Download the latest `.vsix` from [GitHub releases](https://github.com/JordanNewell/temporal-git/releases/latest), then:
+
+```bash
+code --install-extension temporal-git-vscode-2.1.0.vsix
+```
+
+Or from the Extensions panel in VS Code: `⋮` → "Install from VSIX..." → pick the downloaded file.
+
 ## License
 
 MIT

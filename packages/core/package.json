@@ -1,6 +1,6 @@
 {
   "name": "@temporal-git/core",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "Core git bisect engine for temporal-git (shared by CLI and VS Code extension).",
   "author": "Jordan Newell",
   "license": "MIT",
@@ -9,9 +9,19 @@
     "url": "https://github.com/JordanNewell/temporal-git",
     "directory": "packages/core"
   },
+  "funding": [
+    {
+      "type": "github",
+      "url": "https://github.com/sponsors/jordannewell"
+    },
+    {
+      "type": "individual",
+      "url": "https://buymeacoffee.com/jordannewell"
+    }
+  ],
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "files": ["dist", "LICENSE"],
+  "files": ["dist", "LICENSE", "README.md"],
   "publishConfig": {
     "access": "public"
   },
