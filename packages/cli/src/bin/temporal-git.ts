@@ -31,6 +31,8 @@ program
   .argument('<command>', 'Test command to run on each commit')
   .argument('[args...]', 'Arguments for the test command')
   .action(async (command, args, opts) => {
+    // Commander maps --no-reset onto opts.reset (true by default, false when
+    // flag passed). Translate back to the engine's noReset convention.
     const engine = new BisectEngine();
     try {
       await runAutomatedBisect(engine, {
@@ -38,7 +40,7 @@ program
         bad: opts.bad,
         paths: opts.path,
         command: [command, ...args],
-        noReset: opts.noReset,
+        noReset: opts.reset === false,
       });
     } catch (err) {
       reportError((err as Error).message);

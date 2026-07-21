@@ -73,6 +73,34 @@ test('BisectEngine.run: finds the first bad commit in a real repo', async () => 
       assert.ok(step > 0, `step ${step} must be positive`);
       assert.ok(total > 0, `total ${total} must be positive`);
     }
+
+    // After a successful run, the bisect session is auto-cleaned up.
+    assert.equal(await engine.isActive(), false);
+  } finally {
+    await rm(repoDir, { recursive: true, force: true });
+  }
+});
+
+test('BisectEngine.run: noReset=true leaves the session active', async () => {
+  const repoDir = await mkdtemp(join(tmpdir(), 'tg-noreset-'));
+  try {
+    const shas = await buildRepo(repoDir, 8, /* badIdx */ 5);
+    const expectedFirstBad = shas[5];
+
+    const engine = new BisectEngine(repoDir);
+    await engine.start({ bad: shas[7], good: shas[0] });
+
+    const result = await engine.run({
+      command: ['node', 'check.js'],
+      cwd: repoDir,
+      noReset: true,
+    });
+
+    assert.equal(result.commit, expectedFirstBad);
+    // The whole point of noReset: the session must still be active so users
+    // can inspect intermediate state with `temporal-git log`.
+    assert.equal(await engine.isActive(), true);
+    await engine.reset();
   } finally {
     await rm(repoDir, { recursive: true, force: true });
   }
