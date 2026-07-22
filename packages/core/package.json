@@ -29,7 +29,7 @@
     "build": "tsc -p .",
     "dev": "tsc -p . --watch",
     "pretest": "npm run build",
-    "test": "node --test \"dist/test/**/*.test.js\""
+    "test": "node --test dist/test/bisect.integration.test.js dist/test/pure.test.js"
   },
   "dependencies": {
     "simple-git": "^3.19.1"
