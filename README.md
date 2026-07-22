@@ -2,6 +2,9 @@
 
 **Automated git bisect. Find which commit introduced a bug with one command.**
 
+[![npm version](https://img.shields.io/npm/v/temporal-git.svg)](https://www.npmjs.com/package/temporal-git)
+[![license](https://img.shields.io/npm/l/temporal-git.svg)](LICENSE)
+
 ## The Problem
 
 You have a bug. You know it worked three months ago, and it's broken now. There are 400 commits between then and now. Which one introduced it?
