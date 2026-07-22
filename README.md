@@ -2,6 +2,7 @@
 
 **Automated git bisect. Find which commit introduced a bug with one command.**
 
+[![CI](https://github.com/JordanNewell/temporal-git/actions/workflows/ci.yml/badge.svg)](https://github.com/JordanNewell/temporal-git/actions/workflows/ci.yml)
 [![npm version](https://img.shields.io/npm/v/temporal-git.svg)](https://www.npmjs.com/package/temporal-git)
 [![license](https://img.shields.io/npm/l/temporal-git.svg)](LICENSE)
 
