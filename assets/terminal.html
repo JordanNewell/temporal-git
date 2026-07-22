@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 900px; height: 540px; overflow: hidden; }
+  body {
+    background: #010409;
+    font-family: Consolas, 'Cascadia Code', 'JetBrains Mono', monospace;
+    padding: 24px;
+  }
+  .terminal {
+    width: 852px;
+    height: 492px;
+    background: #0d1117;
+    border: 1px solid #30363d;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow:
+      0 30px 60px rgba(0, 0, 0, 0.5),
+      0 0 0 1px rgba(255, 255, 255, 0.02);
+  }
+  .titlebar {
+    background: linear-gradient(180deg, #161b22 0%, #0d1117 100%);
+    border-bottom: 1px solid #30363d;
+    padding: 11px 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .dot { width: 12px; height: 12px; border-radius: 50%; }
+  .dot.red { background: #ff5f56; }
+  .dot.yellow { background: #ffbd2e; }
+  .dot.green { background: #27c93f; }
+  .title {
+    color: #7d8590;
+    font-size: 12.5px;
+    margin-left: 14px;
+    font-family: -apple-system, system-ui, sans-serif;
+  }
+  .body {
+    padding: 22px 26px 24px;
+    flex: 1;
+    overflow: hidden;
+    font-size: 13.5px;
+    line-height: 1.7;
+  }
+  .prompt { color: #39d353; }
+  .branch { color: #a371f7; }
+  .cmd { color: #79c0ff; }
+  .muted { color: #7d8590; }
+  .sha { color: #d2a8ff; }
+  .author { color: #e6edf3; }
+  .progress-fill { color: #39d353; }
+  .progress-empty { color: #30363d; }
+  .progress-pct { color: #b1bac4; }
+  .alert { color: #d29922; font-weight: bold; }
+  .message { color: #e6edf3; }
+  .key { color: #58a6ff; font-weight: bold; }
+  .action { color: #79c0ff; }
+  .divider { color: #21262d; }
+  .header { color: #58a6ff; font-weight: bold; }
+  .gap { height: 8px; }
+  .gap-sm { height: 4px; }
+</style>
+</head>
+<body>
+<div class="terminal">
+  <div class="titlebar">
+    <div class="dot red"></div>
+    <div class="dot yellow"></div>
+    <div class="dot green"></div>
+    <div class="title">temporal-git — checkout-service</div>
+  </div>
+  <div class="body">
+    <div><span class="prompt">~/checkout-service</span> <span class="branch">(main)</span> <span class="cmd">temporal-git run --good v1.0.0 --bad HEAD -- npm test</span></div>
+    <div class="gap"></div>
+    <div><span class="header">Temporal Git v2.1.4</span>  <span class="muted">bisecting between v1.0.0 and HEAD · 8 commits in range</span></div>
+    <div class="gap"></div>
+    <div><span class="muted">step 1/4</span>  <span class="sha">9abcdef</span>  <span class="muted">→ npm test → exit 1</span>  <span style="color:#f85149">bad</span></div>
+    <div><span class="muted">step 2/4</span>  <span class="sha">2345678</span>  <span class="muted">→ npm test → exit 0</span>  <span style="color:#39d353">good</span></div>
+    <div><span class="muted">step 3/4</span>  <span class="sha">b8d4f6a</span>  <span class="muted">→ npm test → exit 1</span>  <span style="color:#f85149">bad</span></div>
+    <div class="gap"></div>
+    <div>Bisecting <span class="progress-fill">████████████████</span><span class="progress-empty">░░░░░</span> <span class="progress-pct">75% (step 3/4)</span></div>
+    <div class="gap"></div>
+    <div><span class="alert">!</span>  <span class="message">Found the culprit commit:</span></div>
+    <div class="gap-sm"></div>
+    <div>  <span class="sha">158eca1</span>  <span class="author">Fix data transformation</span></div>
+    <div>  <span class="muted">Author: Jordan Newell  ·  2026-07-21T00:17:22</span></div>
+    <div class="gap-sm"></div>
+    <div>  <span class="message">The old code wasn't handling edge cases properly. We need to validate</span></div>
+    <div>  <span class="message">the input shape before transforming.</span></div>
+    <div class="gap"></div>
+    <div class="divider">────────────────────────────────────────────────────────────</div>
+    <div class="gap-sm"></div>
+    <div>  <span class="key">Run:</span> <span class="action">git show 158eca1</span>     <span class="key">Run:</span> <span class="action">temporal-git reset</span></div>
+  </div>
+</div>
+</body>
+</html>

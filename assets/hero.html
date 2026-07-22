@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1280px; height: 400px; overflow: hidden; }
+  body {
+    background:
+      radial-gradient(ellipse at top right, rgba(88, 166, 255, 0.10), transparent 60%),
+      linear-gradient(135deg, #0a0e14 0%, #0d1117 60%, #010409 100%);
+    color: #e6edf3;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    display: flex;
+    align-items: center;
+    padding: 0 80px;
+    position: relative;
+  }
+  body::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(88, 166, 255, 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(88, 166, 255, 0.04) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none;
+  }
+  .graph {
+    position: absolute;
+    right: 64px;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0.42;
+    font-family: Consolas, 'Cascadia Code', monospace;
+    font-size: 11px;
+    line-height: 1.7;
+    color: #7d8590;
+    text-align: right;
+    white-space: pre;
+    user-select: none;
+    border-left: 1px solid rgba(88, 166, 255, 0.2);
+    padding-left: 20px;
+  }
+  .graph .sha { color: #7d8590; }
+  .graph .msg { color: #b1bac4; }
+  .graph .good { color: #39d353; }
+  .graph .bad { color: #f85149; }
+  .graph .mid { color: #58a6ff; font-weight: bold; }
+  .graph .arrow { color: #58a6ff; }
+  .graph .label { color: #7d8590; }
+  .graph .found { color: #f85149; font-weight: bold; }
+  .content {
+    position: relative;
+    z-index: 2;
+    max-width: 740px;
+  }
+  .logo-row {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-bottom: 22px;
+  }
+  .logo {
+    width: 56px;
+    height: 64px;
+    filter: drop-shadow(0 0 12px rgba(88, 166, 255, 0.4));
+  }
+  .eyebrow {
+    font-family: Consolas, 'Cascadia Code', monospace;
+    color: #58a6ff;
+    font-size: 12px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+  h1 {
+    font-size: 68px;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    line-height: 1;
+    margin-bottom: 14px;
+    background: linear-gradient(180deg, #ffffff 0%, #b1bac4 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .tagline {
+    color: #b1bac4;
+    font-size: 19px;
+    line-height: 1.5;
+    margin-bottom: 30px;
+    max-width: 600px;
+  }
+  .chips {
+    display: flex;
+    gap: 10px;
+  }
+  .chip {
+    font-family: Consolas, 'Cascadia Code', monospace;
+    font-size: 12.5px;
+    font-weight: 600;
+    padding: 7px 14px;
+    border: 1px solid rgba(88, 166, 255, 0.4);
+    border-radius: 4px;
+    background: rgba(88, 166, 255, 0.07);
+    color: #e6edf3;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    letter-spacing: 0.05em;
+  }
+  .chip::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #58a6ff;
+    box-shadow: 0 0 6px #58a6ff;
+  }
+</style>
+</head>
+<body>
+  <div class="graph"><span class="label">commit range</span> <span class="arrow">·</span> <span class="label">binary search</span>
+
+<span class="good">good</span>  <span class="sha">v1.0.0</span>     <span class="msg">release</span>
+         <span class="sha">3f4a5b6</span>  <span class="msg">refactor</span>
+         <span class="sha">9abcdef</span>  <span class="msg">fix: handler</span>
+         <span class="sha">2345678</span>  <span class="msg">feat: api</span>
+<span class="mid">mid</span>    <span class="sha">b8d4f6a</span>  <span class="msg">docs</span>
+         <span class="sha">158eca1</span>  <span class="msg">Fix data</span>
+<span class="bad">bad</span>    <span class="sha">7f3b9e2</span>  <span class="msg">follow-up</span>
+         <span class="sha">f9e8d7c</span>  <span class="msg">HEAD</span>
+
+<span class="arrow">↓</span> <span class="found">log₂(N) steps</span>
+<span class="found">found: 158eca1</span></div>
+  <div class="content">
+    <div class="logo-row">
+      <svg class="logo" viewBox="0 0 56 64" fill="none">
+        <line x1="28" y1="6" x2="28" y2="58" stroke="#58a6ff" stroke-width="2"/>
+        <circle cx="28" cy="12" r="5" fill="#39d353" stroke="#0d1117" stroke-width="2"/>
+        <circle cx="28" cy="32" r="6" fill="#58a6ff" stroke="#0d1117" stroke-width="2"/>
+        <circle cx="28" cy="52" r="5" fill="#f85149" stroke="#0d1117" stroke-width="2"/>
+        <path d="M14 22 L22 22" stroke="#39d353" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M14 42 L22 42" stroke="#f85149" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      <div class="eyebrow">Open-source · MIT · v2.1.4</div>
+    </div>
+    <h1>Temporal Git</h1>
+    <p class="tagline">Automated <code style="font-family: Consolas, monospace; color: #58a6ff; font-size: 17px;">git bisect</code>. Find which commit introduced a bug with one command.</p>
+    <div class="chips">
+      <span class="chip">CLI</span>
+      <span class="chip">VS Code</span>
+      <span class="chip">git bisect</span>
+    </div>
+  </div>
+</body>
+</html>

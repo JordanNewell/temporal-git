@@ -1,10 +1,15 @@
-# Temporal Git
+<p align="center">
+  <img src="https://raw.githubusercontent.com/JordanNewell/temporal-git/master/assets/hero.png" alt="Temporal Git — Automated git bisect. Find which commit introduced a bug with one command." width="100%">
+</p>
 
-**Automated git bisect. Find which commit introduced a bug with one command.**
+<p align="center">
+  <a href="https://github.com/JordanNewell/temporal-git/actions/workflows/ci.yml"><img src="https://github.com/JordanNewell/temporal-git/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+  <a href="https://www.npmjs.com/package/temporal-git"><img src="https://img.shields.io/npm/v/temporal-git.svg" alt="npm version"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/npm/l/temporal-git.svg" alt="license"></a>
+  <a href="https://github.com/JordanNewell/temporal-git/releases"><img src="https://img.shields.io/github/v/release/JordanNewell/temporal-git?display_name=tag&include_prereleases" alt="latest release"></a>
+</p>
 
-[![CI](https://github.com/JordanNewell/temporal-git/actions/workflows/ci.yml/badge.svg)](https://github.com/JordanNewell/temporal-git/actions/workflows/ci.yml)
-[![npm version](https://img.shields.io/npm/v/temporal-git.svg)](https://www.npmjs.com/package/temporal-git)
-[![license](https://img.shields.io/npm/l/temporal-git.svg)](LICENSE)
+---
 
 ## The Problem
 
@@ -30,6 +35,10 @@ code --install-extension jordannewell.temporal-git
 ```
 
 ## Quick Start
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/JordanNewell/temporal-git/master/assets/terminal.png" alt="temporal-git run output: bisecting through commits with exit codes, progress bar at 75%, culprit commit found with author, date, message, and next-step commands" width="100%">
+</p>
 
 ```bash
 temporal-git run --good v1.0.0 --bad HEAD -- npm test

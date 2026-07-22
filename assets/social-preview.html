@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1280px; height: 640px; overflow: hidden; }
+  body {
+    background:
+      radial-gradient(ellipse 800px 600px at 20% 30%, rgba(88, 166, 255, 0.12), transparent 60%),
+      radial-gradient(ellipse 700px 500px at 80% 80%, rgba(57, 211, 83, 0.06), transparent 60%),
+      linear-gradient(135deg, #0a0e14 0%, #0d1117 60%, #010409 100%);
+    color: #e6edf3;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 90px;
+    position: relative;
+  }
+  body::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(88, 166, 255, 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(88, 166, 255, 0.04) 1px, transparent 1px);
+    background-size: 56px 56px;
+    pointer-events: none;
+  }
+  .badge-row {
+    display: flex;
+    gap: 14px;
+    margin-bottom: 36px;
+    font-family: Consolas, 'Cascadia Code', monospace;
+    font-size: 13px;
+    color: #7d8590;
+    letter-spacing: 0.05em;
+    position: relative;
+    z-index: 2;
+  }
+  .badge-row .sep { color: #30363d; }
+  .badge-row .ok { color: #39d353; }
+  .badge-row .blue { color: #58a6ff; }
+  .hero {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    position: relative;
+    z-index: 2;
+    margin-bottom: 32px;
+  }
+  .logo {
+    width: 96px;
+    height: 110px;
+    flex-shrink: 0;
+    filter: drop-shadow(0 0 24px rgba(88, 166, 255, 0.5));
+  }
+  h1 {
+    font-size: 88px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 0.95;
+    background: linear-gradient(180deg, #ffffff 0%, #8b949e 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .tagline {
+    color: #b1bac4;
+    font-size: 26px;
+    line-height: 1.4;
+    margin-bottom: 38px;
+    max-width: 880px;
+    position: relative;
+    z-index: 2;
+    font-weight: 400;
+  }
+  .tagline code {
+    font-family: Consolas, 'Cascadia Code', monospace;
+    color: #58a6ff;
+    font-size: 24px;
+  }
+  .chips {
+    display: flex;
+    gap: 14px;
+    position: relative;
+    z-index: 2;
+  }
+  .chip {
+    font-family: Consolas, 'Cascadia Code', monospace;
+    font-size: 17px;
+    font-weight: 600;
+    padding: 10px 20px;
+    border: 1px solid rgba(88, 166, 255, 0.4);
+    border-radius: 6px;
+    background: rgba(88, 166, 255, 0.08);
+    color: #e6edf3;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    letter-spacing: 0.06em;
+  }
+  .chip::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #58a6ff;
+    box-shadow: 0 0 8px #58a6ff;
+  }
+  .footer {
+    position: absolute;
+    bottom: 36px;
+    left: 90px;
+    right: 90px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: Consolas, 'Cascadia Code', monospace;
+    font-size: 13px;
+    color: #7d8590;
+    z-index: 2;
+  }
+  .url { color: #e6edf3; }
+  .meta { color: #7d8590; }
+  .meta .accent { color: #58a6ff; }
+</style>
+</head>
+<body>
+  <div class="badge-row">
+    <span class="ok">● MIT</span>
+    <span class="sep">·</span>
+    <span class="ok">● v2.1.4</span>
+    <span class="sep">·</span>
+    <span class="ok">● CI passing</span>
+    <span class="sep">·</span>
+    <span>15 tests</span>
+    <span class="sep">·</span>
+    <span>TypeScript</span>
+  </div>
+  <div class="hero">
+    <svg class="logo" viewBox="0 0 96 110" fill="none">
+      <line x1="48" y1="10" x2="48" y2="100" stroke="#58a6ff" stroke-width="3"/>
+      <circle cx="48" cy="22" r="9" fill="#39d353" stroke="#0d1117" stroke-width="3"/>
+      <circle cx="48" cy="55" r="11" fill="#58a6ff" stroke="#0d1117" stroke-width="3"/>
+      <circle cx="48" cy="88" r="9" fill="#f85149" stroke="#0d1117" stroke-width="3"/>
+      <path d="M22 38 L38 38" stroke="#39d353" stroke-width="2.5" stroke-linecap="round"/>
+      <path d="M22 72 L38 72" stroke="#f85149" stroke-width="2.5" stroke-linecap="round"/>
+    </svg>
+    <h1>Temporal Git</h1>
+  </div>
+  <p class="tagline">Automated <code>git bisect</code>. Find which commit introduced a bug with one command.</p>
+  <div class="chips">
+    <span class="chip">CLI</span>
+    <span class="chip">VS Code</span>
+    <span class="chip">git bisect</span>
+  </div>
+  <div class="footer">
+    <div class="url">github.com/JordanNewell/temporal-git</div>
+    <div class="meta"><span class="accent">●</span> log₂(N) steps to the culprit</div>
+  </div>
+</body>
+</html>
