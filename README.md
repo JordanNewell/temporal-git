@@ -221,4 +221,4 @@ Requires Node ≥ 18.
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+[MIT](LICENSE) © Jordan Newell
