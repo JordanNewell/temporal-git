@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [2.1.1] - 2026-07-21
+## [2.1.1] — 2026-07-21
 
 This release corresponds to the workspace bump landed in commit
 `f14b100` (`core 2.1.1 + cli 2.1.4`). No formal GitHub release was
@@ -25,7 +25,7 @@ published; entries below are sourced from commit history.
 - **`@temporal-git/core` bumped to 2.1.1.**
 - **`@temporal-git/cli` bumped to 2.1.4.**
 
-## [2.1.0] - 2026-07-21
+## [2.1.0] — 2026-07-21
 
 Sourced from commit `a690707` ("Temporal Git v2.1: extract
 @temporal-git/core, fix install + correctness bugs"). No formal
@@ -50,7 +50,7 @@ GitHub release was published.
 - **LICENSE added** to each package and included in the files
   allowlists.
 
-## [2.0.0] - 2026-07-19
+## [2.0.0] — 2026-07-19
 
 Initial public release. Sourced from commit `c282d4d` ("Temporal Git
 v2.0: automated git bisect CLI + VS Code extension"). No formal
@@ -64,7 +64,7 @@ GitHub release was published.
 - **Workspace monorepo** layout: `packages/core`, `packages/cli`,
   `packages/vscode`.
 
-[Unreleased]: https://github.com/JordanNewell/temporal-git/compare/HEAD
+[Unreleased]: https://github.com/JordanNewell/temporal-git/commits/master
 [2.1.1]: https://github.com/JordanNewell/temporal-git/commit/f14b100
 [2.1.0]: https://github.com/JordanNewell/temporal-git/commit/a690707
 [2.0.0]: https://github.com/JordanNewell/temporal-git/commit/c282d4d
