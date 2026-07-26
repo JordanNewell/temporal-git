@@ -4,7 +4,7 @@
   <a href="https://github.com/JordanNewell/temporal-git/actions/workflows/ci.yml"><img src="https://github.com/JordanNewell/temporal-git/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <a href="https://www.npmjs.com/package/temporal-git"><img src="https://img.shields.io/npm/v/temporal-git.svg" alt="npm version"></a>
   <a href="LICENSE"><img src="https://img.shields.io/npm/l/temporal-git.svg" alt="license"></a>
-  <a href="https://github.com/JordanNewell/temporal-git/releases"><img src="https://img.shields.io/github/v/release/JordanNewell/temporal-git?display_name=tag&include_prereleases" alt="latest release"></a>
+  <a href="https://github.com/JordanNewell/temporal-git/releases"><img src="https://img.shields.io/badge/release-2.1.1-blue
 </p>
 
 ## The Problem
