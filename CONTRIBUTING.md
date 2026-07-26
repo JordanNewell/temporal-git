@@ -75,7 +75,7 @@ spawn with the locally compiled `out/extension.js`.
 
 ## Testing
 
-Tests live in `packages/core/test/` and use **Node's built-in test runner**
+Tests live in `packages/core/src/test/` (compiled to `dist/test/` for execution) and use **Node's built-in test runner**
 (`node --test`, not Jest):
 
 - `pure.test.js` — pure engine logic (no git invocations)
@@ -103,7 +103,7 @@ with a real bisect scenario before sending a PR that touches either.
   `tsc -p .` must pass with zero errors.
 - **No `any`** without a comment explaining why. Prefer `unknown` plus a
   type guard at the boundary.
-- **Node 18 baseline** — `engines.node` is `>=18` on `cli` and `core`.
+- **Node 18 baseline** — `engines.node` is `>=18` on `cli`.
   Don't use APIs newer than Node 18 without gating.
 - **No new runtime deps** without justification. The CLI deliberately
   stays small (commander, picocolors, simple-git). Dev deps should be
