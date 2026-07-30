@@ -120,8 +120,14 @@ img { max-width: 100%; height: auto; }
   font-size: 18px;
   letter-spacing: 0.5px;
   text-decoration: none;
+  line-height: 0;
 }
 .brand:hover { color: var(--text); text-decoration: none; }
+.brand-logo {
+  display: block;
+  height: 44px;
+  width: auto;
+}
 .brand-mark {
   display: block;
   width: 40px;
@@ -499,6 +505,7 @@ img { max-width: 100%; height: auto; }
 @media (max-width: 720px) {
   .header-inner { padding: var(--space-3) var(--space-4); }
   .site-nav { gap: var(--space-3); font-size: 12px; }
+  .brand-logo { height: 36px; }
   .main { padding: var(--space-6) var(--space-4); }
   .hero-title { letter-spacing: -1px; }
 }
