@@ -1,7 +1,6 @@
-theme: jekyll-theme-cayman
 title: Temporal Git
 description: Automated git bisect. Find which commit introduced a bug with one command.
-show_downloads: true
+show_downloads: false
 github:
   repository_url: https://github.com/JordanNewell/temporal-git
   owner_url: https://github.com/JordanNewell

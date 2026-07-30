@@ -1,15 +1,37 @@
 ---
 layout: default
+description: Automated git bisect. Find which commit introduced a bug with one command.
 ---
 
-<p align="center">
-  <img src="https://raw.githubusercontent.com/JordanNewell/temporal-git/master/assets/hero.png" alt="Temporal Git — Automated git bisect. Find which commit introduced a bug with one command." width="100%">
-  <br>
-  <a href="https://github.com/JordanNewell/temporal-git/actions/workflows/ci.yml"><img src="https://github.com/JordanNewell/temporal-git/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
-  <a href="https://www.npmjs.com/package/temporal-git"><img src="https://img.shields.io/npm/v/temporal-git.svg" alt="npm version"></a>
-  <a href="https://github.com/JordanNewell/temporal-git/blob/master/LICENSE"><img src="https://img.shields.io/npm/l/temporal-git.svg" alt="license"></a>
-  <a href="https://github.com/JordanNewell/temporal-git/releases"><img src="https://img.shields.io/github/v/release/JordanNewell/temporal-git?display_name=tag&include_prereleases" alt="latest release"></a>
-</p>
+<section class="hero">
+  <div class="hero-content">
+    <p class="hero-eyebrow">Automated git bisect · CLI + VS Code</p>
+    <h1 class="hero-title">
+      TEMPORAL<span class="hero-title-mark">GIT</span>
+    </h1>
+    <p class="hero-tagline">
+      Find which commit introduced a bug. One command. Binary search.
+      <strong style="color: var(--text);">log₂(400) ≈ 9 steps.</strong>
+    </p>
+    <div class="hero-cta">
+      <a class="btn btn-primary" href="#quick-start">Quick Start</a>
+      <a class="btn btn-secondary" href="https://github.com/JordanNewell/temporal-git">Source</a>
+    </div>
+    <div class="badges">
+      <a href="https://github.com/JordanNewell/temporal-git/actions/workflows/ci.yml"><img src="https://github.com/JordanNewell/temporal-git/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+      <a href="https://www.npmjs.com/package/temporal-git"><img src="https://img.shields.io/npm/v/temporal-git.svg" alt="npm version"></a>
+      <a href="https://github.com/JordanNewell/temporal-git/blob/master/LICENSE"><img src="https://img.shields.io/npm/l/temporal-git.svg" alt="license"></a>
+      <a href="https://github.com/JordanNewell/temporal-git/releases"><img src="https://img.shields.io/github/v/release/JordanNewell/temporal-git?display_name=tag&include_prereleases" alt="latest release"></a>
+    </div>
+  </div>
+  <div class="hero-preview">
+    <div class="hero-preview-bar">
+      <span class="dot"></span><span class="dot"></span><span class="dot primary"></span>
+      <span class="title">temporal-git — result</span>
+    </div>
+    <img src="https://raw.githubusercontent.com/JordanNewell/temporal-git/master/assets/hero.png" alt="temporal-git run output: bisecting through commits with exit codes, progress bar at 75%, culprit commit found with author, date, message, and next-step commands">
+  </div>
+</section>
 
 ## The Problem
 
@@ -20,7 +42,7 @@ With `git bisect`: binary search finds the culprit in **log₂(400) ≈ 9 steps*
 
 The problem? `git bisect` has terrible CLI UX. Most developers don't even know it exists. Temporal Git fixes that.
 
-## Install
+## Install {#install}
 
 ### CLI
 
@@ -36,11 +58,7 @@ Download the latest `.vsix` from [GitHub releases](https://github.com/JordanNewe
 code --install-extension temporal-git-vscode-2.1.0.vsix
 ```
 
-## Quick Start
-
-<p align="center">
-  <img src="https://raw.githubusercontent.com/JordanNewell/temporal-git/master/assets/terminal.png" alt="temporal-git run output: bisecting through commits with exit codes, progress bar at 75%, culprit commit found with author, date, message, and next-step commands" width="100%">
-</p>
+## Quick Start {#quick-start}
 
 ```bash
 temporal-git run --good v1.0.0 --bad HEAD -- npm test
@@ -48,7 +66,7 @@ temporal-git run --good v1.0.0 --bad HEAD -- npm test
 
 That's it. Git checks out the midpoint commit, runs `npm test`, marks it pass or fail, and repeats. When it finds the culprit:
 
-```
+```text
   Bisecting between v1.0.0 and HEAD
 
   Bisecting ████████████████░░░░░ 75% (step 3/4)
@@ -64,9 +82,17 @@ That's it. Git checks out the midpoint commit, runs `npm test`, marks it pass or
   Run: git show 158eca1     Run: temporal-git reset
 ```
 
+<div class="hero-preview" style="margin: 32px 0;">
+  <div class="hero-preview-bar">
+    <span class="dot"></span><span class="dot"></span><span class="dot primary"></span>
+    <span class="title">temporal-git — terminal</span>
+  </div>
+  <img src="https://raw.githubusercontent.com/JordanNewell/temporal-git/master/assets/terminal.png" alt="temporal-git interactive session in a terminal">
+</div>
+
 ## CLI Reference
 
-```
+```text
 Usage: temporal-git [options] [command]
 
 Automated git bisect. Find which commit introduced a bug.
@@ -112,7 +138,7 @@ temporal-git start --good v1.0.0 --bad HEAD
 
 Git checks out each midpoint commit. You test it yourself and mark it:
 
-```
+```text
   Bisecting between v1.0.0 and HEAD
 
 ?  Current commit:
@@ -124,7 +150,7 @@ Git checks out each midpoint commit. You test it yourself and mark it:
 
 Invalid answers re-prompt instead of being silently coerced to `skip`:
 
-```
+```text
   Is this commit (g)ood, (b)ad, or (s)kip? x
 
   Error: Unknown answer "x". Use g/good, b/bad, or s/skip.
