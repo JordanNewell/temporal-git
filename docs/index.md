@@ -24,9 +24,6 @@ description: Automated git bisect. Find which commit introduced a bug with one c
       <a href="https://github.com/JordanNewell/temporal-git/releases"><img src="https://img.shields.io/github/v/release/JordanNewell/temporal-git?display_name=tag&include_prereleases" alt="latest release"></a>
     </div>
   </div>
-  <div class="hero-preview hero-preview-logo">
-    <img src="{{ '/assets/img/hero.png' | relative_url }}" alt="Temporal Git logo — green vertical bars forming an N mark on a dark background">
-  </div>
 </section>
 
 ## The Problem
