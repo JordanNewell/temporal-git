@@ -1,40 +1,41 @@
-<p align="center">
-  <img src="https://raw.githubusercontent.com/JordanNewell/temporal-git/master/assets/hero.png" alt="Temporal Git — Automated git bisect. Find which commit introduced a bug with one command." width="100%">
-  <br>
+<div align="center">
+  <img src="assets/logo.png" alt="Temporal Git — Automated git bisect" width="480">
+  <br><br>
+  <em>Automated git bisect. Find which commit introduced a bug with one command.</em>
+  <br><br>
   <a href="https://github.com/JordanNewell/temporal-git/actions/workflows/ci.yml"><img src="https://github.com/JordanNewell/temporal-git/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <a href="https://www.npmjs.com/package/temporal-git"><img src="https://img.shields.io/npm/v/temporal-git.svg" alt="npm version"></a>
   <a href="LICENSE"><img src="https://img.shields.io/npm/l/temporal-git.svg" alt="license"></a>
-  <a href="https://github.com/JordanNewell/temporal-git/releases"><img src="https://img.shields.io/badge/release-2.1.1-blue
-</p>
+  <a href="https://github.com/JordanNewell/temporal-git/releases"><img src="https://img.shields.io/github/v/release/JordanNewell/temporal-git?display_name=tag&include_prereleases" alt="latest release"></a>
+  <a href="https://jordannewell.github.io/temporal-git/"><img src="https://img.shields.io/badge/docs-live-00FF41" alt="docs"></a>
+</div>
 
-## The Problem
+---
 
-You have a bug. You know it worked three months ago, and it's broken now. There are 400 commits between then and now. Which one introduced it?
+You have a bug. You know it worked three months ago, and it's broken now. There are 400 commits between then and now. **Which one introduced it?**
 
-Without bisect: manually checking commits for hours.
-With `git bisect`: binary search finds the culprit in **log₂(400) ≈ 9 steps**.
+- Without bisect: manually checking commits for hours.
+- With `git bisect`: binary search finds the culprit in **log₂(400) ≈ 9 steps**.
 
-The problem? `git bisect` has terrible CLI UX. Most developers don't even know it exists. Temporal Git fixes that.
+The problem? `git bisect` has terrible CLI UX. Most developers don't even know it exists. **Temporal Git fixes that.** It wraps `git bisect` in a typed, tested engine with a clean CLI, a VS Code extension, and a programmable library — all sharing one core so behavior can't drift.
 
 ## Install
 
-### CLI
-
 ```bash
+# CLI
 npm install -g temporal-git
-```
 
-### VS Code Extension
-
-```bash
+# VS Code extension
 code --install-extension jordannewell.temporal-git
 ```
 
-## Quick Start
+Or use the library directly:
 
-<p align="center">
-  <img src="https://raw.githubusercontent.com/JordanNewell/temporal-git/master/assets/terminal.png" alt="temporal-git run output: bisecting through commits with exit codes, progress bar at 75%, culprit commit found with author, date, message, and next-step commands" width="100%">
-</p>
+```bash
+npm install @temporal-git/core
+```
+
+## Quick Start
 
 ```bash
 temporal-git run --good v1.0.0 --bad HEAD -- npm test
@@ -42,7 +43,7 @@ temporal-git run --good v1.0.0 --bad HEAD -- npm test
 
 That's it. Git checks out the midpoint commit, runs `npm test`, marks it pass or fail, and repeats. When it finds the culprit:
 
-```
+```text
   Bisecting between v1.0.0 and HEAD
 
   Bisecting ████████████████░░░░░ 75% (step 3/4)
@@ -60,7 +61,7 @@ That's it. Git checks out the midpoint commit, runs `npm test`, marks it pass or
 
 ## CLI Reference
 
-```
+```text
 Usage: temporal-git [options] [command]
 
 Automated git bisect. Find which commit introduced a bug.
@@ -78,7 +79,7 @@ Commands:
 
 ### Automated Bisect
 
-Point it at a known-good ref, a known-bad ref, and a test command. The test command follows `--` and is passed to `git bisect run`:
+The test command follows `--` and is passed to `git bisect run`. Args with spaces are quoted through correctly.
 
 ```bash
 # npm test
@@ -94,7 +95,7 @@ temporal-git run --good v1.0.0 --bad HEAD -- npm test --grep "user signup"
 temporal-git run --good abc1234 --bad feature-branch -- pytest tests/
 ```
 
-Git interprets exit codes per `git bisect run` convention: `0` = good, non-zero = bad, `125` = skip (e.g. won't build).
+Exit-code convention (per `git bisect run`): `0` = good, non-zero = bad, `125` = skip (e.g. won't build).
 
 ### Interactive Bisect
 
@@ -106,7 +107,7 @@ temporal-git start --good v1.0.0 --bad HEAD
 
 Git checks out each midpoint commit. You test it yourself and mark it:
 
-```
+```text
   Bisecting between v1.0.0 and HEAD
 
 ?  Current commit:
@@ -118,7 +119,7 @@ Git checks out each midpoint commit. You test it yourself and mark it:
 
 Invalid answers re-prompt instead of being silently coerced to `skip`:
 
-```
+```text
   Is this commit (g)ood, (b)ad, or (s)kip? x
 
   Error: Unknown answer "x". Use g/good, b/bad, or s/skip.
@@ -158,6 +159,86 @@ temporal-git run --good v1.0.0 --bad HEAD --no-reset -- npm test
 temporal-git log
 temporal-git reset   # clean up when done
 ```
+
+## Library API
+
+`@temporal-git/core` exposes the same `BisectEngine` the CLI and VS Code extension use. Drop it into a CI job, a custom runner, or another tool.
+
+```bash
+npm install @temporal-git/core
+```
+
+### Run a bisect programmatically
+
+```ts
+import { BisectEngine } from '@temporal-git/core';
+
+const engine = new BisectEngine(process.cwd());
+
+const result = await engine.run({
+  good: 'v1.0.0',
+  bad: 'HEAD',
+  command: ['npm', 'test'],
+  // paths: ['src/api/'],            // optional: path-limited bisect
+  // reset: false,                   // optional: keep bisect refs after run
+});
+
+console.log(result);
+// {
+//   commit: '158eca1...',
+//   shortCommit: '158eca1',
+//   author: 'Jordan Newell',
+//   date: '2026-07-21T00:17:22',
+//   message: 'Fix data transformation\n\nThe old code wasn\'t handling...'
+// }
+```
+
+### Drive an interactive session
+
+```ts
+const engine = new BisectEngine();
+
+await engine.start({ good: 'v1.0.0', bad: 'HEAD' });
+
+// Each midpoint checkout — you test, then mark:
+await engine.mark('good');           // or 'bad', or 'skip'
+await engine.mark('bad', 'abc123');  // mark a specific commit
+
+if (await engine.isActive()) {
+  const log = await engine.log();
+  console.log(log);
+}
+
+await engine.reset();                // return to original HEAD
+```
+
+### Streaming progress
+
+`engine.run` returns a promise, but the underlying git output streams through `reduceBisectStep` if you want to render progress yourself:
+
+```ts
+import { reduceBisectStep } from '@temporal-git/core';
+// reduceBisectStep(prev: BisectStepState, chunk: string) -> { step, totalEstimate }
+```
+
+### Full API surface
+
+| Class / function | Signature |
+|------------------|-----------|
+| `BisectEngine` | `new BisectEngine(cwd?: string)` |
+| `engine.run` | `(options: RunOptions) => Promise<BisectResult>` |
+| `engine.start` | `(options: BisectOptions) => Promise<void>` |
+| `engine.mark` | `(type: 'good'\|'bad'\|'skip', commit?: string) => Promise<string>` |
+| `engine.reset` | `(commit?: string) => Promise<void>` |
+| `engine.log` | `() => Promise<string>` |
+| `engine.isActive` | `() => Promise<boolean>` |
+| `engine.isInsideRepo` | `() => Promise<boolean>` |
+| `engine.getCommitInfo` | `(hash: string) => Promise<BisectResult>` |
+| `engine.getCurrentCommit` | `() => Promise<{ commit; shortCommit; ... }>` |
+| `engine.getGitHubRemote` | `() => Promise<string \| null>` |
+| `parseGitHubOwnerRepo` | `(remoteUrl: string) => string \| null` |
+| `shellQuote` | `(s: string) => string` |
+| `reduceBisectStep` | `(prev, chunk) => BisectStepState` |
 
 ## VS Code Extension
 
