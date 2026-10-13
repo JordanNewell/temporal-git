@@ -4,7 +4,7 @@
   "private": true,
   "description": "Automated git bisect for finding which commit introduced a bug",
   "author": "Jordan Newell",
-  "license": "MIT",
+  "license": "BUSL-1.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/JordanNewell/temporal-git"
