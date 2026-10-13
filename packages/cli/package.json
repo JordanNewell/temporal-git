@@ -3,7 +3,7 @@
   "version": "2.1.4",
   "description": "Automated git bisect. Find which commit introduced a bug with one command.",
   "author": "Jordan Newell",
-  "license": "MIT",
+  "license": "BUSL-1.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/JordanNewell/temporal-git",

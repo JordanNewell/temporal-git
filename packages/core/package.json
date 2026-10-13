@@ -3,7 +3,7 @@
   "version": "2.1.1",
   "description": "Core git bisect engine for temporal-git (shared by CLI and VS Code extension).",
   "author": "Jordan Newell",
-  "license": "MIT",
+  "license": "BUSL-1.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/JordanNewell/temporal-git",
