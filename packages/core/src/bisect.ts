@@ -33,6 +33,24 @@ export interface RunOptions {
 }
 
 const FIRST_BAD_COMMIT_REGEX = /^([0-9a-f]+) is the first bad commit$/m;
+/** Machine-readable line from `git bisect log`; stable across git versions and locales. */
+const FIRST_BAD_COMMIT_LOG_REGEX = /^# first bad commit: \[([0-9a-f]+)\]/m;
+
+/**
+ * Extracts the first-bad-commit SHA from bisect output, accepting either the
+ * human-readable prose line (`<sha> is the first bad commit`, from stdout)
+ * or the machine-readable log line (`# first bad commit: [sha]`, from
+ * `git bisect log`). Returns null when neither form is present.
+ *
+ * Exported for unit testing without spawning git.
+ */
+export function parseFirstBadCommit(output: string): string | null {
+  const prose = output.match(FIRST_BAD_COMMIT_REGEX);
+  if (prose) return prose[1];
+  const log = output.match(FIRST_BAD_COMMIT_LOG_REGEX);
+  if (log) return log[1];
+  return null;
+}
 const BISECT_STEP_REGEX =
   /Bisecting:\s+(\d+)\s+revisions left to test after this \(roughly (\d+) steps?\)/;
 
@@ -192,9 +210,12 @@ export class BisectEngine {
       });
 
       proc.on('close', async (code) => {
-        const match = stdout.match(FIRST_BAD_COMMIT_REGEX);
+        // Primary source: git's stdout prose line. On newer git (2.55+) this
+        // line may be absent or reworded even on success, so fall back to the
+        // version-stable machine-readable `git bisect log` output.
+        const match = parseFirstBadCommit(stdout);
         if (match) {
-          const hash = match[1];
+          const hash = match;
           try {
             const result = await this.getCommitInfo(hash);
             if (!options.noReset) {
@@ -209,9 +230,30 @@ export class BisectEngine {
         } else if (code !== 0) {
           reject(new Error(`Bisect failed (exit ${code}): ${stderr || stdout}`));
         } else {
-          reject(
-            new Error('Bisect completed without finding the first bad commit')
-          );
+          try {
+            const log = await this.git.raw(['bisect', 'log']);
+            const logMatch = parseFirstBadCommit(log);
+            if (logMatch) {
+              const hash = logMatch;
+              const result = await this.getCommitInfo(hash);
+              if (!options.noReset) {
+                await this.reset();
+              }
+              resolve(result);
+            } else {
+              reject(
+                new Error(
+                  'Bisect completed without finding the first bad commit'
+                )
+              );
+            }
+          } catch (err) {
+            reject(
+              new Error(
+                `Bisect completed without finding the first bad commit (log fallback failed: ${err})`
+              )
+            );
+          }
         }
       });
 
