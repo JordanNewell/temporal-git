@@ -120,6 +120,24 @@ test('parseFirstBadCommit: machine-readable `git bisect log` line', () => {
   );
 });
 
+test('parseFirstBadCommit: git 2.55+ quoted prose line', () => {
+  assert.equal(
+    parseFirstBadCommit(
+      "Bisecting: 3 revisions left\nc0ffee0 is the first 'bad' commit\ndone\n"
+    ),
+    'c0ffee0'
+  );
+});
+
+test('parseFirstBadCommit: git 2.55+ quoted `git bisect log` line', () => {
+  assert.equal(
+    parseFirstBadCommit(
+      "# bad: [abc1234] commit 7\n# first 'bad' commit: [def5678] commit 5 (buggy)\n# good: [1111111] commit 0\n"
+    ),
+    'def5678'
+  );
+});
+
 test('parseFirstBadCommit: null when neither form present', () => {
   assert.equal(parseFirstBadCommit('Bisecting: 0 revisions left\n'), null);
   assert.equal(parseFirstBadCommit(''), null);

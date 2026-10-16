@@ -32,9 +32,10 @@ export interface RunOptions {
   onStep?: (step: number, totalEstimate: number) => void;
 }
 
-const FIRST_BAD_COMMIT_REGEX = /^([0-9a-f]+) is the first bad commit$/m;
+// git <2.55: `<sha> is the first bad commit`; git >=2.55 quotes 'bad'.
+const FIRST_BAD_COMMIT_REGEX = /^([0-9a-f]+) is the first '?bad'? commit$/m;
 /** Machine-readable line from `git bisect log`; stable across git versions and locales. */
-const FIRST_BAD_COMMIT_LOG_REGEX = /^# first bad commit: \[([0-9a-f]+)\]/m;
+const FIRST_BAD_COMMIT_LOG_REGEX = /^# first '?bad'? commit: \[([0-9a-f]+)\]/m;
 
 /**
  * Extracts the first-bad-commit SHA from bisect output, accepting either the
