@@ -88,9 +88,9 @@
     "simple-git": "^3.19.1"
   },
   "devDependencies": {
-    "@types/vscode": "^1.80.0",
-    "@types/node": "18.x",
-    "esbuild": "^0.23.0",
-    "typescript": "^5.1.6"
+    "@types/vscode": "^1.138.0",
+    "@types/node": "26.x",
+    "esbuild": "^0.28.2",
+    "typescript": "^7.0.2"
   }
 }
