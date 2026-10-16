@@ -241,9 +241,15 @@ export class BisectEngine {
               }
               resolve(result);
             } else {
+              let logDump = '';
+              let gitVer = '';
+              try {
+                logDump = log;
+                gitVer = await this.git.raw(['--version']);
+              } catch {}
               reject(
                 new Error(
-                  'Bisect completed without finding the first bad commit'
+                  `Bisect completed without finding the first bad commit\nGIT: ${gitVer}\nSTDOUT:\n${stdout}\nSTDERR:\n${stderr}\nBISECT LOG:\n${logDump}`
                 )
               );
             }
