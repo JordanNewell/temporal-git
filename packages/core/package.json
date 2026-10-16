@@ -32,7 +32,7 @@
     "test": "node --test dist/test/bisect.integration.test.js dist/test/pure.test.js"
   },
   "dependencies": {
-    "simple-git": "^3.19.1"
+    "simple-git": "^4.0.1"
   },
   "devDependencies": {
     "@types/node": "26.x",
