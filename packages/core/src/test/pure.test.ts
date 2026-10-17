@@ -1,6 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
+  parseFirstBadCommit,
   parseGitHubOwnerRepo,
   reduceBisectStep,
   shellQuote,
@@ -97,4 +98,29 @@ test('shellQuote: round-trips args with spaces intact', () => {
   const joined = argv.map(shellQuote).join(' ');
   // sh -c parses joined back into the same argv.
   assert.equal(joined, `'npm' 'test' '--grep' 'foo bar'`);
+});
+
+test('parseFirstBadCommit: human-readable bisect output line', () => {
+  assert.equal(
+    parseFirstBadCommit(
+      'Bisecting: 3 revisions left\nc0ffee0 is the first bad commit\ndone\n'
+    ),
+    'c0ffee0'
+  );
+});
+
+test('parseFirstBadCommit: machine-readable `git bisect log` line', () => {
+  // Format emitted in `git bisect log`; stable across git versions and
+  // locale-independent, unlike the prose line parsed historically.
+  assert.equal(
+    parseFirstBadCommit(
+      '# bad: [abc1234] commit 7\n# first bad commit: [def5678] commit 5 (buggy)\n# good: [1111111] commit 0\n'
+    ),
+    'def5678'
+  );
+});
+
+test('parseFirstBadCommit: null when neither form present', () => {
+  assert.equal(parseFirstBadCommit('Bisecting: 0 revisions left\n'), null);
+  assert.equal(parseFirstBadCommit(''), null);
 });
