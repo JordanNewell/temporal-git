@@ -85,7 +85,7 @@
   },
   "dependencies": {
     "@temporal-git/core": "^2.1.0",
-    "simple-git": "^4.0.1"
+    "simple-git": "^4.0.2"
   },
   "devDependencies": {
     "@types/vscode": "^1.138.0",
