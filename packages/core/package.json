@@ -21,7 +21,11 @@
   ],
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "files": ["dist", "LICENSE", "README.md"],
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
   "publishConfig": {
     "access": "public"
   },
@@ -35,7 +39,7 @@
     "simple-git": "^4.0.2"
   },
   "devDependencies": {
-    "@types/node": "26.x",
-    "typescript": "^5.9.3"
+    "@types/node": "^26.6.5",
+    "typescript": "^7.0.2"
   }
 }
