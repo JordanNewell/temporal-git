@@ -41,7 +41,7 @@
     "@temporal-git/core": "^2.0.0",
     "commander": "^15.1.0",
     "picocolors": "^1.0.0",
-    "simple-git": "^4.0.2"
+    "simple-git": "^4.1.0"
   },
   "devDependencies": {
     "@types/node": "^26.6.6",
